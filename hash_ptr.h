@@ -4,7 +4,6 @@
 #include "picosha2.h"
 
 #include <cstdlib>
-#include <vector>
 
 using std::memcpy;
 
@@ -13,23 +12,11 @@ class hash_ptr {
 public:
 
   explicit hash_ptr(T* pointee) : pointee_{pointee} {
-    // TODO compute the hash
-
-    // 1. Convert the pointee data to a vector of bytes
-    // 1a. Allocate buffer for bytes (must free)
     unsigned char *pointee_bytes = new unsigned char[sizeof(T)];
-    
-    // 1b. use memcpy to convert bytes from pointee type to unsigned char[].
     memcpy(pointee_bytes, pointee, sizeof(T));
-    
-    // 2. Compute hash of bytes
     picosha2::hash256(pointee_bytes, pointee_bytes + sizeof(T),
 		      hash_, hash_ + 32);
-
-    // 3. Cleanup 1a.
     delete[] pointee_bytes;
-    
-
   }    
 
   hash_ptr& operator=(const hash_ptr& other) {
@@ -37,7 +24,7 @@ public:
   };
 
   ~hash_ptr() {
-    // TODO
+
   }
 
   T& operator*() const {
